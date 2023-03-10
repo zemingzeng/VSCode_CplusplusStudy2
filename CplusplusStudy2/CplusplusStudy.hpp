@@ -1,5 +1,6 @@
 #ifndef CplusplusStudy_
 #define CplusplusStudy_
+#include "Util.hpp"
 
 class CplusplusStudy
 {
