@@ -64,4 +64,11 @@ void CplusplusStudy::study()
      */
     auto [ptr, ec] = to_chars(str5.data(), str5.data() + 5, 12345);
     Util::LOGI("struct bindings ptr:%s ec:%d", ptr, ec);
+
+    Util::LOGI("\n-----------------20230311----------------------");
+    int number2 = 1;
+    // int number3 = (number2++) + (number2++); 未定义的行为
+    // int number3 = (++number2) + number2;  未定义的行为
+    int number3 = (++number2) + 1;
+    Util::LOGI("number3:%d", number3);
 }
