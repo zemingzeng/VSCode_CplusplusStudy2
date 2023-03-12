@@ -22,6 +22,16 @@ namespace ming
 using namespace std;
 using mingzz::Util;
 
+class Apple
+{
+public:
+    int price{0};
+    Apple(int price_)
+    {
+        price = price_;
+    }
+};
+
 void CplusplusStudy::study()
 {
 
@@ -71,4 +81,42 @@ void CplusplusStudy::study()
     // int number3 = (++number2) + number2;  未定义的行为
     int number3 = (++number2) + 1;
     Util::LOGI("number3:%d", number3);
+
+    Util::LOGI("\n-----------------20230312----------------------");
+    /**
+     * 列表初始化有一些优点：
+       1.列表初始化可以防止窄化转换（narrowing conversion）。例如，如果你试图使用一个浮点数来初始化一个整数，列表初始化会报错，而圆括号初始化不会。
+       2.列表初始化可以用来初始化聚合类型（aggregate type），例如数组和结构体。这在圆括号初始化中是不可能的。
+       3.列表初始化语法更加统一，可以用来初始化几乎所有类型的对象。
+     *
+     */
+    Util::LOGI("C++11 引入的列表初始化（list initialization）语法，可替代圆括号初始化（parentheses initialization）");
+    Apple apple1{1};
+    Apple apple2 = Apple(1);
+    Apple apple3 = Apple{1};
+    Util::LOGI("使用各种方式初始化对象：Apple apple1{1}-->price:%d Apple apple2 = Apple(1)-->price:%d Apple apple3 = Apple{1}-->price:%d",
+               apple1.price, apple2.price, apple3.price);
+    Apple *pApple1 = new Apple{1};
+    Apple *pApple2 = new Apple(1);
+    Apple *pApple3{new Apple{2}};
+    Util::LOGI("使用各种方式初始化对象指针：Apple *pApple1 = new Apple{1}-->price:%d Apple *pApple2 = new Apple(1)-->price:%d Apple *pApple3{new Apple{2}}-->price:%d",
+               pApple1->price, pApple2->price, pApple3->price);
+    delete pApple1;
+    delete pApple2;
+    delete pApple3;
+
+    string string1{"hello"};
+    string string2{string1};
+    Util::LOGI("string1 addr:%p,string2 addr:%p", &string1, &string2);
+
+    string string4{"the shy"};
+    string_view string_view1 = string4;
+    Util::LOGI("string4修改前的string_view length:%d", string_view1.length());
+    string4+=" is MVP";
+    //在使用string_view时一定要确保它的有效性，比如它所指的string可能已经经过重新分配内存的操作了
+    //这样它就可能变得无效（即使它的data还能使用，但是还是得避免使用它，因为可能出现未定义的行为）
+    Util::LOGI("string4修改后的string_view length:%d", string_view1.length());
+    string_view1 = string4;
+    Util::LOGI("最后的string_view length:%d", string_view1.length());
+
 }
