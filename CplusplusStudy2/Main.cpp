@@ -1,6 +1,5 @@
 #include "CplusplusStudy.hpp"
 #include "Util.hpp"
-
 using namespace mingzz;
 
 int main()

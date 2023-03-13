@@ -18,10 +18,11 @@ namespace ming
 
 #include <compare>
 #include <charconv>
+#include <format.h>
 
 using namespace std;
 using mingzz::Util;
-
+using stringView = std::string_view;
 class Apple
 {
 public:
@@ -110,13 +111,22 @@ void CplusplusStudy::study()
     Util::LOGI("string1 addr:%p,string2 addr:%p", &string1, &string2);
 
     string string4{"the shy"};
-    string_view string_view1 = string4;
+    stringView string_view1 = string4;
     Util::LOGI("string4修改前的string_view length:%d", string_view1.length());
-    string4+=" is MVP";
-    //在使用string_view时一定要确保它的有效性，比如它所指的string可能已经经过重新分配内存的操作了
-    //这样它就可能变得无效（即使它的data还能使用，但是还是得避免使用它，因为可能出现未定义的行为）
+    string4 += " is MVP";
+    // 在使用string_view时一定要确保它的有效性，比如它所指的string可能已经经过重新分配内存的操作了
+    // 这样它就可能变得无效（即使它的data还能使用，但是还是得避免使用它，因为可能出现未定义的行为）
     Util::LOGI("string4修改后的string_view length:%d", string_view1.length());
     string_view1 = string4;
     Util::LOGI("最后的string_view length:%d", string_view1.length());
 
+    Util::LOGI("\n-----------------20230312----------------------");
+    string string5{"123"};
+    stringView string_view2{string5 + "456"}; // 最好不能这么使用string_view这样会造成dangling pointer
+    Util::LOGI("string_view2 data:%s", string_view2.data());
+    auto string_view3{"Ni hao"sv};
+    Util::LOGI(R"(sv 限定符,用auto推断会推断成string_view: auto string_view3{"Ni hao"sv})");
+    Util::LOGI("size of wchar_t:%d", sizeof(wchar_t));
+    // auto formatType = fmt::format("使用format来输出int=5的二进制:{:b}", 5);
+    Util::LOGI("使用format来输出int=5的二进制:%s",fmt::format("{:b}", 5).data());
 }
