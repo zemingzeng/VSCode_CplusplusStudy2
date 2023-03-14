@@ -20,6 +20,12 @@ namespace ming
 #include <charconv>
 #include <format.h>
 
+auto autoMethod(auto &context)
+{
+    context.begin();
+    return "i am auto method!!!";
+}
+
 using namespace std;
 using mingzz::Util;
 using stringView = std::string_view;
@@ -31,11 +37,18 @@ public:
     {
         price = price_;
     }
+    void begin()
+    {
+    }
 };
+
+void tempTest();
+
+#include <numbers>
 
 void CplusplusStudy::study()
 {
-
+    Util::LOGI("\nStart-----------------------------------------------------------------------");
     Util::LOGI("this c++ study program!!!!!");
 
     Util::LOGI("\n-----------------20230308----------------------");
@@ -120,7 +133,7 @@ void CplusplusStudy::study()
     string_view1 = string4;
     Util::LOGI("最后的string_view length:%d", string_view1.length());
 
-    Util::LOGI("\n-----------------20230312----------------------");
+    Util::LOGI("\n-----------------20230313----------------------");
     string string5{"123"};
     stringView string_view2{string5 + "456"}; // 最好不能这么使用string_view这样会造成dangling pointer
     Util::LOGI("string_view2 data:%s", string_view2.data());
@@ -128,5 +141,81 @@ void CplusplusStudy::study()
     Util::LOGI(R"(sv 限定符,用auto推断会推断成string_view: auto string_view3{"Ni hao"sv})");
     Util::LOGI("size of wchar_t:%d", sizeof(wchar_t));
     // auto formatType = fmt::format("使用format来输出int=5的二进制:{:b}", 5);
-    Util::LOGI("使用format来输出int=5的二进制:%s",fmt::format("{:b}", 5).data());
+    Util::LOGI("使用format来输出int=5的二进制:%s", fmt::format("{:b}", 5).data());
+
+    Util::LOGI("\n-----------------20230314----------------------");
+    string string6{"xxxxx"};
+    stringView string_view4{string6};
+    string string7{string_view4};
+    Apple autoMethodParam{1};
+    Util::LOGI(autoMethod(autoMethodParam));
+    Util::LOGI("std::numbers中定义的常量pi:%.18f", numbers::pi);
+    // memory
+    int **ppInt{nullptr};
+    ppInt = new int *;
+    *ppInt = new int(5);
+    Util::LOGI("当前的系统的指针占用内存字节:%d", sizeof(int *));
+    Util::LOGI("指针也可以分配在free store内存中比如:\nint **ppInt{nullptr};ppInt = new int *;*ppInt = new int;\nppInt在stack区:%p,*ppInt在free store区:%p,最后的new int也在free store区:%p",
+               &ppInt, ppInt, *ppInt);
+    delete *ppInt;
+    *ppInt = nullptr;
+    delete ppInt;
+    ppInt = nullptr;
+    Util::LOGI("释放二级指针的顺序应该是:1. delete *ppInt; 2. *ppInt = nullptr; 3. delete ppInt; 4. ppInt = nullptr;");
+    int *pInt1 = new (nothrow) int;
+    if (nullptr == pInt1)
+    {
+        // 分配失败
+    }
+    delete pInt1;
+    pInt1 = nullptr;
+    Util::LOGI("一般情况下用new分配内存,分配失败则会抛异常,但是用int* p = new(nothorw) int;分配内存时分配失败则会返回空指针!");
+    Apple *apple4{new Apple[2]{Apple(3), Apple(4)}};
+    delete[] apple4;
+    apple4 = nullptr;
+    int(*ppInt1)[2] = {new int[2][2]}; // 数组指针
+    delete[] pInt1;
+    /**
+     在C和C++中，当数组作为函数参数时，它会退化为指向数组第一个元素的指针。
+     所以 void arrayMethod(int arr[4])、void arrayMethod(int *arr)、
+     void arrayMethod(int arr[]) 和 void arrayMethod(int arr[n]) 都是等价的。
+     的看传进来的参数是什么。
+     然而void arrayMethod(int (&arr)[4])；此函数就必须传int[4]的参数
+     当你试图访问指针外的地址时，可能会发生越界访问。越界访问可能会导致程序崩溃，也可能不会。
+     这取决于操作系统如何处理这种情况。在某些情况下，操作系统可能会检测到越界访问并终止程序运行；
+     在其他情况下，程序可能会继续运行，但其行为将变得不可预测。因此，应该避免越界访问。
+     比如”int* p{new int}; (p+12)=10;“像这种就是未定义的行为
+     */
+    // int &arra[5]; c++中不能定义引用数组，因为引用是别名，没内存，数组所以无法分配内存
+
+
+
+    
+
+    // temp test
+    tempTest();
+    Util::LOGI("\nEnd-----------------------------------------------------------------------");
+}
+
+template <>
+class fmt::formatter<Apple>
+{
+};
+
+void arrayMethod(int arr[4])
+{
+    *(arr) = 10;
+    Util::LOGI("arrayMethod arr指向的地址值是:%d", *arr);
+}
+// void arrayMethod1(int &arr[4])
+// {
+// }
+
+void tempTest()
+{
+    int temp = 9;
+    // int *arrayInt{new int[4]};
+    int *arrayInt = &temp;
+    // 其实接收的一个指针
+    arrayMethod(arrayInt);
 }
